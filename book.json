@@ -1,0 +1,43 @@
+{
+  "title": "LanLang's Gitbook",
+  "author": "X-Wolf",
+  "description": "多种技术知识点汇总，方便后期查看",
+  "language": "zh-hans",
+  "gitbook": "3.2.3",
+  "styles": {
+    "website": "./styles/website.css"
+  },
+  "structure": {
+    "readme": "README.md"
+  },
+  "plugins": [
+    "expandable-chapters-small",
+    "anchors",
+    "github",
+    "baidu-tongji-with-multiple-channel",
+    "copy-code-button",
+    "anchor-navigation-ex",
+    "prism",
+    "-lunr",
+    "-search",
+    "search-pro",
+    "-highlight",
+    "-github-buttons",
+    "-donate",
+    "-sharing-plus",
+    "-page-footer-ex",
+    "-favicon",
+    "-ga",
+    "-sharing",
+    "-splitter",
+    "-editlink"
+  ],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/lanlangdeai/Gitbook.git"
+    },
+    "baidu-tongji-with-multiple-channel": {
+      "token": "30a114d157d9edf0514ba584936c649d"
+    }
+  }
+}
