@@ -4,5 +4,5 @@
 
 如果您从本书得到了一些收获，欢迎扫码赞赏我，您的支持会激励我创作更多优质内容。
 
-![微信](/images/wechat-donate.png)
-![支付宝](/images/alipay-donate.jpg)
+![微信](/assets/images/wechat-donate.png)
+![支付宝](/assets/images/alipay-donate.jpg)

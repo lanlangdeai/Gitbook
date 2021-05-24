@@ -18,6 +18,15 @@
     "copy-code-button",
     "anchor-navigation-ex",
     "prism",
+    "splitter",
+    "page-footer-ex",
+    "sharing",
+    "codeblock-filename",
+    "-mathjax",
+    "multipart",
+    "bootstrap-callout",
+    "theme-comscore",
+    "-rss",
     "-lunr",
     "-search",
     "search-pro",
@@ -25,11 +34,9 @@
     "-github-buttons",
     "-donate",
     "-sharing-plus",
-    "-page-footer-ex",
     "-favicon",
     "-ga",
-    "-sharing",
-    "-splitter",
+
     "-editlink"
   ],
   "pluginsConfig": {
@@ -38,6 +45,29 @@
     },
     "baidu-tongji-with-multiple-channel": {
       "token": "30a114d157d9edf0514ba584936c649d"
+    },
+    "page-footer-ex": {
+      "copyright": "[lanlangdeai](https://github.com/lanlangdeai)",
+      "markdown": true,
+      "update_label": "<i>updated</i>",
+      "update_format": "YYYY-MM-DD HH:mm:ss"
+    },
+    "sharing": {
+      "facebook": false,
+      "twitter": false,
+      "google": false,
+      "weibo": false,
+      "instapaper": false,
+      "vk": false,
+      "all": [
+        "weibo"
+      ]
+    },
+    "anchor-navigation-ex":{
+      "multipleH1":false
+    },
+    "theme-default": {
+      "showLevel": true
     }
   }
 }
