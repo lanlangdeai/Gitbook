@@ -639,15 +639,42 @@ function create_qrcode($str,$path){
 
 
 
+### 其他
+
+- 七牛-图片存储服务
+
+
+
+安装
+
+```
+composer require qiniu/php-sdk
+```
 
 
 
 
 
+5. 邮件相关
+
+- tp-mailer(https://github.com/yuan1994/tp-mailer)
+
+**一款支持所有PHP框架的优美的邮件发送类**，ThinkPHP系列框架开箱即用，其他框架初始化配置即可使用
+
+基于 SwiftMailer 二次开发, 为 ThinkPHP系列框架量身定制, 使 ThinkPHP 支持邮件模板、纯文本、附件邮件发送以及更多邮件功能, 邮件发送简单到只需一行代码
+
+同时了方便其他框架或者非框架使用, Tp Mailer也非常容易拓展融合到其他框架中, 欢迎大家 `Fork` 和 `Star`, 提交代码让Tp Mailer支持更多框架
 
 
 
+安装：
 
+```php
+composer require yuan1994/tp-mailer
+    或者
+//下载源码，引入使用
+require_once '/path/to/tp-mailer/src/autoload.php;
+```
 
 
 

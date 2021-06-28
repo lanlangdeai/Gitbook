@@ -1,5 +1,297 @@
 <?php
 
+// 判断是否是微信浏览器
+function isWechat()
+{
+    return strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false;
+}
+
+
+
+
+/**
+ * 验证日期与是否是整点
+ * @param  string 日期
+ * @param  bool   整点验证
+ */
+function validateDate($date,$isZero=false)
+{
+    $timestamp = strtotime($date);
+    if(false === $timestamp){
+        return false;
+    }
+    if($isZero){
+        $today = strtotime('today');
+        $interval = abs($timestamp - $today);
+        if( !is_int($interval/(24*60*60) ) ){
+            return false;
+        }
+    }
+    return $timestamp;
+}
+
+
+/**
+ * 获取指定月份始末时间戳
+ * @param  integer $year  年份
+ * @param  integer $month 月份
+ */
+function getMonthTimestamps($year,$month)
+{
+    if( !checkdate($month, 1, $year) ){
+        return false;
+    }
+
+    $start = mktime(0, 0, 0, $month, 1, $year);
+    $end   = mktime(23, 59, 59, $month, date('t',$start), $year);
+    return $start && $end ? [$start,$end] : false;
+}
+
+print_r(getMonthTimestamps(2021,2));
+
+die;
+
+
+
+/**
+ * 浮点数求和（如果是减 就把参数前加 - 号）
+ * @param array ...$params(5.6以上写法)
+ * @return mixed 保留两位小数
+ */
+function add(...$params) {
+    return array_reduce($params,function($base,$n){
+        $base = bcadd($base,+$n,2);
+        return $base;
+    });
+}
+
+$ret1 = add(10.01, 20.22, 0.1);
+print_r($ret1);
+
+
+
+
+
+
+
+
+
+
+
+die;
+/**
+ * 导出CSV文件
+ * @param  string 文件名称
+ * @param  Array  数据头
+ * @param  Array  数据体
+ */
+function exportCsv($fileName, $titleArr=[], $dataArr=[])
+{
+    ini_set('memory_limit','128M');
+    ini_set('max_execution_time',0);
+    ob_end_clean();
+    ob_start();
+    header("Content-Type: text/csv");
+    header("Content-Disposition:filename=".$fileName);
+    $fp=fopen('php://output','w');
+    fwrite($fp, chr(0xEF).chr(0xBB).chr(0xBF));//防止乱码(比如微信昵称)
+    fputcsv($fp,$titleArr);
+    $index = 0;
+    foreach ($dataArr as $item) {
+        if($index==1000){
+            $index=0;
+            ob_flush();
+            flush();
+        }
+        $index++;
+        fputcsv($fp,$item);
+    }
+
+    ob_flush();
+    flush();
+    ob_end_clean();
+}
+
+
+/**
+ * 导出CSV格式数据
+ * @param $fileName
+ * @param array $titleArr
+ * @param array $dataArr
+ */
+//function exportCsv($fileName, $titleArr=[], $dataArr=[])
+//{
+//    ini_set('memory_limit', '128M');
+//    ini_set('max_execution_time',0);
+//
+//    $output = fopen($fileName, 'w');
+//    //add BOM to fix UTF-8 in Excel
+//    fputs($output, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ) );
+//    //告诉浏览器这个是一个csv文件
+//    header("Content-Type: application/csv;charset=utf-8");
+//    header("Content-Disposition: attachment; filename={$fileName}");
+//    header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+//    header('Expires:0');
+//    header('Pragma:public');
+//
+//    fputcsv($output, $titleArr); //输出表头
+//
+//    foreach ($dataArr as $v) { //输出每一行数据到文件中
+//        fputcsv($output, array_values($v));
+//    }
+//
+//    fclose($output);
+//}
+
+/**
+ * 过滤并获取有用数据
+ * @param  array $data      原数据
+ * @param  array $standard  保留的参数
+ */
+function filterData($data, array $standard){
+    if(empty($data) || !is_array($data) || !is_array($standard)) return [];
+
+    $standardArr = array_fill_keys($standard, '');
+
+    $data = array_intersect_key($data,$standardArr);
+
+    return array_merge($standardArr,$data);
+}
+
+$arr = ['name'=>'xing','age'=>23,'sex'=>1];
+$standard = ['age'];
+
+
+$ret = filterData($arr, $standard);
+var_dump($ret);
+die;
+
+
+
+
+
+
+
+
+
+
+/**
+ * 生成一定数量的不重复随机数
+ * @param  integer $min 最小值
+ * @param  integer $max 最大值
+ * @param  integer $num 随机数数量
+ * @return array        返回值
+ */
+function generateUniqueRand(int $min, int $max,int $num)
+{
+    $count = 0;
+    $return = [];
+    if(($max-$min+1)<$num){
+        return $return;
+    }
+
+    while ($count < $num) {
+        $return[] = mt_rand($min, $max);
+        $return   = array_flip(array_flip($return));
+        $count    = count($return);
+    }
+    shuffle($return);
+    return $return;
+}
+
+print_r(generateUniqueRand(1, 10, 10));
+
+die;
+
+function reduceArray($array) {
+    $return = [];
+    array_walk_recursive($array, function ($x) use (&$return) {
+        $return[] = $x;
+    });
+    return $return;
+}
+
+$data = [
+    ['php','python','golang'],
+    ['mysql','sqlite','mongodb','redis','Memcache']
+];
+
+print_r(reduceArray($data));
+die;
+
+
+
+
+
+
+
+/**
+ * 数组中数据的求和（支持多维数组）
+ * @param array $array
+ * @return int|mixed
+ */
+function arraySum(array $array)
+{
+    $total = 0;
+    foreach(new RecursiveIteratorIterator( new RecursiveArrayIterator($array) ) as $num){
+        $total += $num;
+    }
+    return $total;
+}
+
+$arr = [[11,22],33, [44,55,[66,77]]];
+print_r(arraySum($arr));
+
+die;
+
+
+
+
+
+
+
+
+/**
+ * 将对象数据转换成数据
+ * @param $object
+ * @return array
+ */
+function objectToArray($object)
+{
+    if(!is_array($object) && !is_object($object)){
+        return $object;
+    }
+    if( is_object($object) ){
+        $object = get_object_vars($object);
+    }
+    return array_map('objectToArray',$object);
+}
+
+//$data = ['name'=>'xing','age'=>20];
+//$obj = (object)$data;
+//
+//print_r($obj);
+//
+//$arr = objectToArray($obj);
+//print_r(objectToArray($obj));
+//
+//
+//
+//
+//die;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * 从二维数组中取出自己要的KEY值
@@ -58,7 +350,7 @@ function array_merge_multi()
 
 
 $data = [
-    ['name'=>'xing','age'=>23,'sex'=>1],
+    ['name'=>'xing','age'=>23,'sex'=>111],
     ['name'=>'xia','age'=>20,'sex'=>0],
     ['name'=>'','age'=>0,'sex'=>0],
     ['name'=>'xue','age'=>2,'sex'=>0],
@@ -75,9 +367,9 @@ $name = 'xing-';
 
 $arr = [['name'=>'sss', 'age'=>-1]];
 
-//$ret = array_merge_multi($data, $arr);
-//var_dump($ret);
-
+$ret = array_merge_multi($data, $arr);
+var_dump($ret);
+die;
 
 /**
  * 格式化字节大小
@@ -121,8 +413,8 @@ function listDir($dir, $recursion = true)
     return $dirInfo;
 }
 
-$path = realpath(__FILE__);
-echo $path;
-$ret = listDir($path);
-var_dump($ret);
+//$path = realpath(__FILE__);
+//echo $path;
+//$ret = listDir($path);
+//var_dump($ret);
 //echo get_uuid();
