@@ -2,9 +2,9 @@
 
 
 
-1. 处理特殊字符，将Unicode文本标准化
+1. ### 处理特殊字符，将Unicode文本标准化
 
-```
+```python
 import re
 import unicodedata
 
@@ -26,9 +26,9 @@ print(f's2: {s2}')
 
 
 
-2. 小数点精度计算
+2. ### 小数点精度计算
 
-```
+```python
 from decimal import Decimal, localcontext, getcontext
 
 a = 4.1
@@ -52,6 +52,63 @@ print(a2+b2)  # 9
 
 # 注意Decimal的参数必须是字符串，不能是浮点型，否则误差依旧存在。
 ```
+
+
+
+3. 异常处理
+
+```python
+import sys
+import traceback
+import logging
+
+logging.basicConfig(format='%(asctime)s [%(threadName)s: %(thread)d]'
+                      '%(pathname)s: %(funcName)s: %(lineno)d %(levelname)s - %(message)s', level=logging.DEBUG)
+
+def fun1():
+    raise Exception("func1 throw exception")
+
+def main():
+    pass
+    try:
+        fun1()
+    except Exception as e:
+        print(e)
+        traceback.print_exc(limit=2, file=sys.stdout)  # 直接输出错误信息
+        logging.info(traceback.format_exc(limit=2))  # 错误信息以字符串的格式返回
+
+        
+>>>2021-07-07 16:41:40,374 [MainThread: 39204]E:/python_projects/test/except.py: main: 30 INFO - Traceback (most recent call last):
+  File "E:/python_projects/test/except.py", line 20, in main
+    fun1()
+  File "E:/python_projects/test/except.py", line 14, in fun1
+    raise Exception("func1 throw exception")
+Exception: func1 throw exception 
+        
+```
+
+4.耗时装饰器
+
+```python
+import time
+
+def time_usage(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        func(*args, **kwargs)
+        end = time.time()
+        used = end - start
+        print(f'{func.__name__} used: {used}')
+
+    return wrapper
+
+@time_usage
+def one():
+    time.sleep(3)
+
+one()
+```
+
 
 
 

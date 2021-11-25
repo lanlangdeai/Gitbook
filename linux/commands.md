@@ -11,3 +11,29 @@ find -mtime +10 -name "*.log" -exec rm -rf {} \;
 
 ```
 
+
+
+## 2. 查看Mac地址
+
+```bash
+cat /sys/class/net/eth0/address
+```
+
+
+
+### 3. 抑制空格和注释查看文件内容
+
+```bash
+grep -v '^#\|^$' /etc/default/ufw
+```
+
+
+
+
+
+
+
+
+
+
+

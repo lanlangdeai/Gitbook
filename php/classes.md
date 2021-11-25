@@ -1,6 +1,7 @@
 # 常用类
 
 
+
 ## 1. ===============  自封装  ===============
 
 
@@ -144,7 +145,7 @@ class Agent
 
 
 
-- 文件处理（上传/下载）
+- ### 文件处理（上传/下载）
 
 ```php
 <?php
@@ -354,15 +355,138 @@ class File
 
 
 
+- ### 字符串加解密
+
+```php
+class Encrypt
+{
+	/**
+     * 加密
+     * @param  string  $str    需加密字符串
+     * @param  integer $factor 分类
+     * @return string          加密之后的字符串
+     */
+    static function  doEncode(string $str , int $factor = 0){
+        $len = strlen($str);
+        if(!$len){
+            return;
+        }
+        if($factor  === 0){
+            $factor = mt_rand(1, min(255 , ceil($len / 3)));
+        }
+        $c = $factor % 8;
+
+        $slice = str_split($str ,$factor);
+        for($i=0;$i < count($slice);$i++){
+            for($j=0;$j< strlen($slice[$i]) ;$j ++){
+                $slice[$i][$j] = chr(ord($slice[$i][$j]) + $c + $i);
+            }
+        }
+        $ret = pack('C' , $factor).implode('' , $slice);
+        return self::base64URLEncode($ret);
+    }
+
+    /**
+     * 解密
+     * @param  string $str 需解密字符串
+     * @return string      解密之后的字符串
+     */
+    static function doDecode($str)
+    {  
+        if($str == ''){
+            return;
+        }     
+        $str = self::base64URLDecode($str);
+        $factor =  ord(substr($str , 0 ,1));
+        $c = $factor % 8;
+        $entity = substr($str , 1); 
+        $slice = str_split($entity , $factor);
+        if(!$slice){
+            return false;
+        }
+        for($i=0;$i < count($slice); $i++){
+            for($j =0 ; $j < strlen($slice[$i]); $j++){
+                $slice[$i][$j] = chr(ord($slice[$i][$j]) - $c - $i );
+            }
+        }
+        return implode($slice);
+    }
+
+    static function base64URLEncode($data) 
+    {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    static function base64URLDecode($data) 
+    {
+        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+    }
+}
+```
 
 
 
+- ### 字符串加解密2
+
+```php
+class EncryptAndDecrypt
+{
+
+    /**
+     * 加解密算法
+     * @param  string $string 加密数据
+     * @param  string $rand   加密随机字符串
+     * @param  string $action 加解密方式标识
+     * @return string         加解密之后数据
+     */
+    public static function mymd5($string, $rand='randstring', $action="EN")
+    {
+        $secret_string = $rand.'5*a,.^&;?.%#@!';
+
+        if($string=="")
+            return "";
+        if($action=="EN"){
+            $md5code=substr(md5($string),8,10);
+        }else{
+            $md5code=substr($string,-10);
+            $string=substr($string,0,strlen($string)-10);
+        }
+        //$key = md5($md5code.$_SERVER["HTTP_USER_AGENT"].$secret_string);
+        $key = md5($md5code.$secret_string);
+        $string = ($action=="EN" ? $string : base64_decode($string));
+        $len = strlen($key);
+        $code = "";
+        for($i=0; $i<strlen($string); $i++){
+            $k = $i%$len;
+            $code .= $string[$i]^$key[$k];
+        }
+        $code = $action == "DE" ? (substr(md5($code),8,10) == $md5code ? $code : NULL) : base64_encode($code)."$md5code";
+
+        return $code;
+    }
+
+    // base64_encode
+    public static function b64encode( $string ) {
+        $data = base64_encode( $string );
+        $data = str_replace( array ( '+' , '/' , '=' ), array ( '-' , '_' , '' ), $data );
+        return $data;
+    }
+    // base64_decode
+    public static function b64decode( $string ) {
+        $data = str_replace( array ( '-' , '_' ), array ( '+' , '/' ), $string );
+        $mod4 = strlen( $data ) % 4;
+        if ( $mod4 ) {
+            $data .= substr( '====', $mod4 );
+        }
+        return base64_decode( $data );
+    }
+
+}
+```
 
 
 
-
-
-
+---
 
 
 
@@ -374,6 +498,7 @@ class File
 
 ```php
 <?php
+require_once './PHPExcel/IOFactory.php';
 
 class Excel
 {
@@ -590,9 +715,66 @@ class Excel
 
 ```
 
+- 读取Excel文件
 
 
+```php
+$fileName = "url.xls";
 
+if (!file_exists($fileName)) {
+
+    exit("文件".$fileName."不存在");
+
+}
+
+
+require_once './PHPExcel/IOFactory.php';
+
+$objPHPExcel = PHPExcel_IOFactory::load($fileName);
+
+//获取sheet表格数目
+$sheetCount = $objPHPExcel->getSheetCount();
+
+//默认选中sheet0表
+$sheetSelected = 0;
+$objPHPExcel->setActiveSheetIndex($sheetSelected);
+
+//获取表格行数
+$rowCount = $objPHPExcel->getActiveSheet()->getHighestRow();
+
+//获取表格列数
+$columnCount = $objPHPExcel->getActiveSheet()->getHighestColumn();
+
+echo "<div>Sheet Count : ".$sheetCount."　　行数： ".$rowCount."　　列数：".$columnCount."</div>";
+
+$dataArr = array();
+
+ 
+/* 循环读取每个单元格的数据 */
+//行数循环
+for ($row = 1; $row <= $rowCount; $row++){
+
+	//列数循环 , 列数是以A列开始
+	for ($column = 'A'; $column <= $columnCount; $column++) {
+
+	    $dataArr[] = $objPHPExcel->getActiveSheet()->getCell($column.$row)->getValue();
+	    echo $column.$row.":".$objPHPExcel->getActiveSheet()->getCell($column.$row)->getValue()."<br />";
+
+	}
+
+	echo "<br/>消耗的内存为：".(memory_get_peak_usage(true) / 1024 / 1024)."M";
+
+	$endTime = time();
+
+	echo "<div>解析完后，当前的时间为：".date("Y-m-d H:i:s")."　　　
+
+	总共消耗的时间为：".(($endTime - $startTime))."秒</div>";
+
+	var_dump($dataArr);
+
+	$dataArr = NULL;
+}
+```
 
 
 

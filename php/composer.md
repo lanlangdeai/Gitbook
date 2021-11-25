@@ -244,7 +244,7 @@ s('fòôbàř')->length();      // '6'
 
 
 
-- jmespath/jmespath.py(https://github.com/jmespath/jmespath.php) 有PHP，Python，js，lua等语言支持
+- ### jmespath/jmespath.py(https://github.com/jmespath/jmespath.php) 有PHP，Python，js，lua等语言支持
 
 JMESPath是JSON的查询语言
 
@@ -389,7 +389,7 @@ $log->error('Bar');
 
 4. ### 第三方开发工具包
 
-- overtrue/wechat(https://easywechat.com/)（https://github.com/w7corp/easywechat）
+- ### overtrue/wechat(https://easywechat.com/)（https://github.com/w7corp/easywechat）
 
 非官网的微信SDK，方便快捷的接入微信相关功能,还支持laravel框架的集成（https://github.com/overtrue/laravel-wechat）
 
@@ -442,7 +442,7 @@ $server->serve()->send();
 
 
 
-- overtrue/socialite(https://github.com/overtrue/socialite)
+- ### overtrue/socialite(https://github.com/overtrue/socialite)
 
 Socialite 是一个 [OAuth2](https://oauth.net/2/) 认证工具。 它的灵感来源于 [laravel/socialite](https://github.com/laravel/socialite)， 你可以很轻易的在任何 PHP 项目中使用它。
 
@@ -483,7 +483,7 @@ $ composer require "overtrue/socialite" -vvv
 
 
 
-- overtrue/pinyin(https://github.com/overtrue/pinyin)
+- ### overtrue/pinyin(https://github.com/overtrue/pinyin)
 
 🇨🇳 基于 [CC-CEDICT](http://cc-cedict.org/wiki/) 词典的中文转拼音工具，更准确的支持多音字的汉字转拼音解决方案。
 
@@ -526,7 +526,7 @@ $pinyin->convert('带着希望去旅行，比到达终点更美好', PINYIN_ASCI
 
 
 
-- overtrue/easy-sms(https://github.com/overtrue/easy-sms)
+- ### overtrue/easy-sms(https://github.com/overtrue/easy-sms)
 
  一款满足你的多种发送需求的短信发送组件
 
@@ -594,7 +594,7 @@ $easySms->send(13188888888, [
 
 
 
-- phpqrcode/phpqrcode(http://phpqrcode.sourceforge.net) ([PHP生成二维码图片 phpqrcode库php-qrcode包 中文手册文档](http://www.phpqrcode.com/))
+- ### phpqrcode/phpqrcode(http://phpqrcode.sourceforge.net) ([PHP生成二维码图片 phpqrcode库php-qrcode包 中文手册文档](http://www.phpqrcode.com/))
 
 生成二维码工具
 
@@ -641,7 +641,7 @@ function create_qrcode($str,$path){
 
 ### 其他
 
-- 七牛-图片存储服务
+- ### 七牛-图片存储服务
 
 
 
@@ -657,7 +657,7 @@ composer require qiniu/php-sdk
 
 5. 邮件相关
 
-- tp-mailer(https://github.com/yuan1994/tp-mailer)
+- ### tp-mailer(https://github.com/yuan1994/tp-mailer)
 
 **一款支持所有PHP框架的优美的邮件发送类**，ThinkPHP系列框架开箱即用，其他框架初始化配置即可使用
 

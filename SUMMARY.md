@@ -3,6 +3,7 @@
 * [简介](README.md)
 * [PHP](php/php.md)
     * [常用方法](php/functions.md)
+        * [文件类](php/files.md)
     * [常用类](php/classes.md)
     * [第三方包](php/composer.md)
 * [Python](python/python.md)

@@ -1,5 +1,166 @@
 <?php
 
+
+class EncryptAndDecrypt
+{
+
+    /**
+     * 加解密算法
+     * @param  string $string 加密数据
+     * @param  string $rand   加密随机字符串
+     * @param  string $action 加解密方式标识
+     * @return string         加解密之后数据
+     */
+    public static function mymd5($string, $rand='randstring', $action="EN")
+    {
+        $secret_string = $rand.'5*a,.^&;?.%#@!';
+
+        if($string=="")
+            return "";
+        if($action=="EN"){
+            $md5code=substr(md5($string),8,10);
+        }else{
+            $md5code=substr($string,-10);
+            $string=substr($string,0,strlen($string)-10);
+        }
+        //$key = md5($md5code.$_SERVER["HTTP_USER_AGENT"].$secret_string);
+        $key = md5($md5code.$secret_string);
+        $string = ($action=="EN" ? $string : base64_decode($string));
+        $len = strlen($key);
+        $code = "";
+        for($i=0; $i<strlen($string); $i++){
+            $k = $i%$len;
+            $code .= $string[$i]^$key[$k];
+        }
+        $code = $action == "DE" ? (substr(md5($code),8,10) == $md5code ? $code : NULL) : base64_encode($code)."$md5code";
+
+        return $code;
+    }
+
+    // base64_encode
+    public static function b64encode( $string ) {
+        $data = base64_encode( $string );
+        $data = str_replace( array ( '+' , '/' , '=' ), array ( '-' , '_' , '' ), $data );
+        return $data;
+    }
+    // base64_decode
+    public static function b64decode( $string ) {
+        $data = str_replace( array ( '-' , '_' ), array ( '+' , '/' ), $string );
+        $mod4 = strlen( $data ) % 4;
+        if ( $mod4 ) {
+            $data .= substr( '====', $mod4 );
+        }
+        return base64_decode( $data );
+    }
+
+}
+
+$name = 'xing';
+$randStr = '1111111111111111111111111111111111111111111';
+$en1 = EncryptAndDecrypt::mymd5($name, $randStr);
+var_dump($en1);
+$de1 = EncryptAndDecrypt::mymd5($en1, $randStr, 'DE');
+var_dump($de1);
+
+die;
+
+
+
+
+
+
+
+
+
+
+class Coding
+{
+    /**
+     * 加密
+     * @param  string  $str    需加密字符串
+     * @param  integer $factor 分类
+     * @return string          加密之后的字符串
+     */
+    static function  doEncode($str , $factor = 0){
+        $len = strlen($str);
+        if(!$len){
+            return;
+        }
+        if($factor  === 0){
+            $factor = mt_rand(1, min(255 , ceil($len / 3)));
+        }
+        $c = $factor % 8;
+
+        $slice = str_split($str ,$factor);
+        for($i=0;$i < count($slice);$i++){
+            for($j=0;$j< strlen($slice[$i]) ;$j ++){
+                $slice[$i][$j] = chr(ord($slice[$i][$j]) + $c + $i);
+            }
+        }
+        $ret = pack('C' , $factor).implode('' , $slice);
+        return self::base64URLEncode($ret);
+    }
+
+    /**
+     * 解密
+     * @param  string $str 需解密字符串
+     * @return string      解密之后的字符串
+     */
+    static function doDecode($str)
+    {
+        if($str == ''){
+            return;
+        }
+        $str = self::base64URLDecode($str);
+        $factor =  ord(substr($str , 0 ,1));
+        $c = $factor % 8;
+        $entity = substr($str , 1);
+        $slice = str_split($entity , $factor);
+        if(!$slice){
+            return false;
+        }
+        for($i=0;$i < count($slice); $i++){
+            for($j =0 ; $j < strlen($slice[$i]); $j++){
+                $slice[$i][$j] = chr(ord($slice[$i][$j]) - $c - $i );
+            }
+        }
+        return implode($slice);
+    }
+
+    static function base64URLEncode($data)
+    {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    static function base64URLDecode($data)
+    {
+        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+    }
+}
+
+
+$name = 'xing';
+$factor = 1;
+$en1 = Coding::doEncode($name,$factor);
+var_dump($en1);
+$de1 = Coding::doDecode($en1);
+var_dump($de1);
+
+$factor = 2;
+$en1 = Coding::doEncode($name,$factor);
+var_dump($en1);
+$de1 = Coding::doDecode($en1);
+var_dump($de1);
+
+
+
+
+
+
+
+die;
+
+
 // 判断是否是微信浏览器
 function isWechat()
 {
