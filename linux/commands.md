@@ -6,7 +6,7 @@
 
 ```bash
 # 删除10天前文件
-find -mtime +10 -name "*.log" -exec rm -rf {} \;
+find -mtime +10 -name "*.log" | xargs rm -f
 
 
 ```

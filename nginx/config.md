@@ -239,6 +239,7 @@ server {
     server_name www.域名.com;
     rewrite ^(.*)$ https://${server_name}$1 permanent; 
 }
+
 server {
     listen 443;
     server_name www.域名.com;

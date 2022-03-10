@@ -52,5 +52,8 @@ sudo systemctl enable docker  # 设置开机启动
 
 ```shell
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+# 添加权限
+chmod +x /usr/local/bin/docker-compose
 ```
 
